@@ -58,7 +58,7 @@ class SP:
             'client_secret':    self.secret,
             'resource':         self.resource
         }
-        url = 'https://accounts.accesscontrol.windows.net/e95f1b23-abaf-45ee-821d-b7ab251ab3bf/tokens/OAuth/2'
+        url = f'https://accounts.accesscontrol.windows.net/{self.tenant}/tokens/OAuth/2'
         headers = {'content-type': 'application/x-www-form-urlencoded'}
         try:
             response = requests.post(url, data=payload, headers=headers)
