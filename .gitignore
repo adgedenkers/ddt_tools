@@ -1,7 +1,6 @@
 # adge's special stuff
-keyring_setup*.py
+__*.py
 secrets.py
-setup/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
