@@ -1,12 +1,11 @@
 '''
-Name: sp.py
+Name: sp2.py
 Description: Script to interact with SharePoint Online via REST API
 Author: Adge Denkers / github.com/adgedenkers/
 Created: 2023-08-13
 Updated: 2023-10-25
 (C) 2023 denkers.co 
 '''
-
 
 import io
 import os
@@ -116,7 +115,7 @@ class SharePoint:
             # Add more dtype to SharePoint field type mappings as needed
 
             field_payload = {
-                '__metadata': {'type': field_type},
+                '__metadata': {'type': field_type}, 
                 'Title': col,
                 'FieldTypeKind': 2  # Corresponds to SP.FieldText
             }
@@ -140,38 +139,10 @@ class SharePoint:
                 logging.error(f"Failed to add item: {e}")
                 raise
 
-    def save_file_to_library(self, library, file_path):
-        """
-        Save a file to a SharePoint library.
-        """
-        file_name = os.path.basename(file_path)
-        req_url = f"https://dvagov.sharepoint.com/sites/{self.site}/_api/web/GetFolderByServerRelativeUrl('/sites/{self.site}/{library}')/Files/add(url='{file_name}', overwrite=true)"
-        
-        with open(file_path, 'rb') as f:
-            file_content = f.read()
-        
-        try:
-            response = self.session.post(req_url, data=file_content)
-            response.raise_for_status()
-        except requests.RequestException as e:
-            logging.error(f"Failed to save file: {e}")
-            raise
+if __name__ == "__main__":
+    sp = SharePoint("MySite")
+    sp.get_file("MyLibrary", "MyFile.xlsx")
 
-    def search_list_and_return_df(self, list_name, query):
-        """
-        Search a SharePoint list and return data in a Pandas DataFrame.
-        """
-        req_url = f"https://dvagov.sharepoint.com/sites/{self.site}/_api/web/lists/getbytitle('{list_name}')/items?{query}"
-        
-        try:
-            response = self.session.get(req_url)
-            response.raise_for_status()
-            data = response.json()['value']
-            df = pd.DataFrame(data)
-            return df
-        except requests.RequestException as e:
-            logging.error(f"Failed to search list: {e}")
-            raise
 
 # Store the token in the keyring
 token = "your_token_here"
