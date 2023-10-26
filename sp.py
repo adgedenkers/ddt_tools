@@ -86,7 +86,7 @@ class SP:
 
         req_headers = {
             'Connection':'keep-alive',
-            'Authorization':'Bearer {}'.format(self.getToken()),
+            'Authorization':'Bearer {}'.format(self.get_token()),
             'Content-Type':'application/octet-stream'
         }
 
@@ -113,7 +113,7 @@ class SP:
         site = self.site
         req_headers = {
             'Connection':'keep-alive',
-            'Authorization':'Bearer {}'.format(self.getToken()),
+            'Authorization':'Bearer {}'.format(self.get_token()),
             'Content-Type':'application/octet-stream'
         }
         req_url = "https://dvagov.sharepoint.com/sites/{s}/_api/web/lists/getbytitle('{l}')/rootfolder/files/add(url='{fn}', overwrite=true)".format(l=library, fn=file_name, s=site)
@@ -137,7 +137,7 @@ class SP:
         
         req_headers = { 
             'Connection':'keep-alive',   
-            'Authorization':'Bearer {}'.format(self.getToken()),
+            'Authorization':'Bearer {}'.format(self.get_token()),
             'Accept':'application/json;odata=verbose'
         }
 
@@ -158,7 +158,7 @@ class SP:
         # set the request header json data
         req_headers = {
             'Connection':'keep-alive',
-            'Authorization':'Bearer {}'.format(self.getToken()),
+            'Authorization':'Bearer {}'.format(self.get_token()),
             'Content-Type':'application/octet-stream'
         }
         # return the json object
