@@ -36,25 +36,42 @@ class setup():
         keyring.set_password(self.namespace, "KeyTest", True)
         
         # Setting Additional Database Variables in the Keyring
-        u         = keyring.get_password(self.namespace, "SQL_USER")
-        p         = keyring.get_password(self.namespace, "SQL_PASS")
-        driver    = keyring.get_password(self.namespace, "SQL_DRIVER")
-        a_srv     = keyring.get_password(self.namespace, "SERVER_A")
-        b_srv     = keyring.get_password(self.namespace, "SERVER_B")
-        c_srv     = keyring.get_password(self.namespace, "SERVER_C")
-        
-        self.conn_1 = "mssql+pyodbc://{}:{}@{}/{}?driver={}&Trusted_Connection=no".format(u, p, a_srv, "Database1", driver)
-        self.conn_2 = "mssql+pyodbc://{}:{}@{}/{}?driver={}&Trusted_Connection=no".format(u, p, c_srv, "Database2", driver)
+        self.u         = keyring.get_password(self.namespace, "SQL_USER")
+        self.p         = keyring.get_password(self.namespace, "SQL_PASS")
+        self.driver    = keyring.get_password(self.namespace, "SQL_DRIVER")
+        self.a_srv     = keyring.get_password(self.namespace, "SERVER_A")
+        self.b_srv     = keyring.get_password(self.namespace, "SERVER_B")
+        self.c_srv     = keyring.get_password(self.namespace, "SERVER_C")
+
+        self.setup_connections()
+    
+    def setup_connections(self):
+
+        # Setup SQLAlchemy Connection Engines
+        self.conn_1 = "mssql+pyodbc://{}:{}@{}/{}?driver={}&Trusted_Connection=no".format(self.u, self.p, self.a_srv, "PMDAccess", self.driver)
+        self.conn_2 = "mssql+pyodbc://{}:{}@{}/{}?driver={}&Trusted_Connection=no".format(self.u, self.p, self.a_srv, "PowerHCM", self.driver)
+        self.conn_3 = "mssql+pyodbc://{}:{}@{}/{}?driver={}&Trusted_Connection=no".format(self.u, self.p, self.b_srv, "PowerHCM", self.driver)
         
         keyring.set_password(self.namespace, "SQL_PMDBS", self.conn_1)
         keyring.set_password(self.namespace, "SQL_PWRAS", self.conn_2)
+        keyring.set_password(self.namespace, "SQL_PWRBS", self.conn_2)
+
+        # Setup Simple PyODBC Connection Strings
+        self.odbc_pmdbs = f'DRIVER={self.driver};SERVER={self.a_srv};DATABASE=PMDAccess;UID={self.u};PWD={self.p};'
+        self.odbc_pwras = f'DRIVER={self.driver};SERVER={self.a_srv};DATABASE=PowerHCM;UID={self.u};PWD={self.p};'
+        self.odbc_pwrbs = f'DRIVER={self.driver};SERVER={self.b_srv};DATABASE=PowerHCM;UID={self.u};PWD={self.p};'
+
+        keyring.set_password(self.namespace, "SQL_ODBC_PMDBS", self.odbc_pmdbs)
+        keyring.set_password(self.namespace, "SQL_ODBC_PWRAS", self.odbc_pmdbs)
+        keyring.set_password(self.namespace, "SQL_ODBC_PWRBS", self.odbc_pmdbs)
 
 
+        # Setup SharePoint Data
 
         # Setting up the SharePoint Keyring Values
-        keyring.set_password(self.namespace, "root_url",     "https://example.sharepoint.com")
-        keyring.set_password(self.namespace, "resource",     "00000003-0000-0000-0000-000000000000/example.sharepoint.com@abcd1234-efab-56cde-789f-a12b34c45d56e78")
-        keyring.set_password(self.namespace, "tenant",       "abcd1234-efab-56cde-789f-a12b34c45d56e78")
+        keyring.set_password(self.namespace, "root_url",     "https://dvagov.sharepoint.com/sites/")
+        keyring.set_password(self.namespace, "resource",     "00000003-0000-0ff1-ce00-000000000000/dvagov.sharepoint.com@e95f1b23-abaf-45ee-821d-b7ab251ab3bf")
+        keyring.set_password(self.namespace, "tenant",       "e95f1b23-abaf-45ee-821d-b7ab251ab3bf")
         keyring.set_password(self.namespace, "grant_type",   "client_credentials")
 
         # Add an entry formatted like below, providing the client and client_secret required to use the
@@ -73,12 +90,6 @@ class setup():
 
 
         print("DDT Keyring Setup for this user, on this machine.")
-
-def setup_keyring(self):
-    parser = argparse.ArgumentParser(description="set the Namespace variable")
-    parser.add_argument('namespace', type=str, help="Provide the Namespace for the keyring passwords")
-    args = parser.parse_args()
-    setup_instance = setup(args.namespace)
 
 
 if __name__ == "__main__":
